@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Abonnement
+{% endblock %}
+
+{% block content %}
+<div>
+    <h2>Suivre d'autres utilisateurs</h2>
+    <form action="" method="post">
+        {% csrf_token%}
+        {{ form }}
+        <input type="submit" value="Envoyer">
+    </form>
+</div>
+<div>
+    <h2>Abonnements</h2>
+    <ul>
+        {% for following in followings %}
+            <li>{{ following.followed_user }}</li>
+        {% endfor %}
+    </ul>
+</div>
+<div>
+    <h2>Abonnés</h2>
+    <ul>
+        {% for follower in followers %}
+            <li>{{ follower.user }}</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

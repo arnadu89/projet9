@@ -10,6 +10,7 @@ from . import forms
 class LoginView(LoginBaseView):
     form_class = forms.LoginForm
     template_name = "bookreview/login.html"
+    redirect_authenticated_user = True
 
 
 class FluxView(LoginRequiredMixin, TemplateView):
@@ -20,9 +21,17 @@ class SignupView(CreateView):
     form_class = forms.SignupForm
     template_name = "bookreview/signup.html"
 
-    # def form_valid(self, form):
-    #     form.cleaned_data
-    #     return super().form_valid(form)
-
     def get_success_url(self):
         return reverse("flux")
+
+
+class FollowView(LoginRequiredMixin, CreateView):
+    form_class = forms.UserFollowsForm
+    template_name = "bookreview/follow.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user = self.request.user
+        context["followers"] = user.followed_by.all()
+        context["followings"] = user.following.all()
+        return context

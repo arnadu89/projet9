@@ -19,6 +19,9 @@ class UserFollows(models.Model):
     class Meta:
         unique_together = ('user', 'followed_user')
 
+    def __str__(self):
+        return f"Abonnement : {self.followed_user} est suivi par {self.user}"
+
 
 class Ticket(models.Model):
     title = models.CharField(max_length=128)

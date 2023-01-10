@@ -20,8 +20,9 @@ import bookreview.views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', bookreview.views.LoginView.as_view(), name='login'),
+    path('login', bookreview.views.LoginView.as_view(), name='login'),
     path('logout', LogoutView.as_view(), name='logout'),
     path('signup', bookreview.views.SignupView.as_view(), name='signup'),
-    path('flux/', bookreview.views.FluxView.as_view(), name='flux'),
+    path('', bookreview.views.FluxView.as_view(), name='flux'),
+    path('follow', bookreview.views.FollowView.as_view(), name='follow')
 ]
