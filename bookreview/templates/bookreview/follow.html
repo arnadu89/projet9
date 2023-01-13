@@ -17,7 +17,11 @@ Abonnement
     <h2>Abonnements</h2>
     <ul>
         {% for following in followings %}
-            <li>{{ following.followed_user }}</li>
+            <li>
+                {{ following.followed_user }} <a href=""><button type="button" class="btn btn-danger btn-sm">Se désabonner</button></a>
+            </li>
+        {% empty %}
+            <p>Vous n'avez aucun abonnement.</p>
         {% endfor %}
     </ul>
 </div>
@@ -26,6 +30,8 @@ Abonnement
     <ul>
         {% for follower in followers %}
             <li>{{ follower.user }}</li>
+        {% empty %}
+            <p>Vous n'avez aucun abonné.</p>
         {% endfor %}
     </ul>
 </div>

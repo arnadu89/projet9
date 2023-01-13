@@ -4,7 +4,8 @@ from django.views.generic import CreateView, ListView, TemplateView
 from django.urls import reverse
 from django.contrib.auth.mixins import LoginRequiredMixin
 
-from . import forms
+from bookreview import forms
+from bookreview.models import UserFollows
 
 
 class LoginView(LoginBaseView):
@@ -26,8 +27,19 @@ class SignupView(CreateView):
 
 
 class FollowView(LoginRequiredMixin, CreateView):
+    model = UserFollows
     form_class = forms.UserFollowsForm
     template_name = "bookreview/follow.html"
+    success_url = "follow"
+
+    # def get_initial(self):
+    #     self.initial.update({"request": self.request})
+    #     return super().get_initial()
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["request"] = self.request
+        return kwargs
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
