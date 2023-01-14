@@ -24,5 +24,7 @@ urlpatterns = [
     path('logout', LogoutView.as_view(), name='logout'),
     path('signup', bookreview.views.SignupView.as_view(), name='signup'),
     path('', bookreview.views.FluxView.as_view(), name='flux'),
-    path('follow', bookreview.views.FollowView.as_view(), name='follow')
+    path('follow', bookreview.views.FollowView.as_view(), name='follow'),
+    path('unfollow/<int:pk>', bookreview.views.UnFollowView.as_view(), name='unfollow'),
+    path('ticket/create', bookreview.views.TicketCreateView.as_view(), name='ticket_create'),
 ]

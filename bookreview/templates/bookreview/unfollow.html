@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Désabonnement
+{% endblock %}
+
+{% block content %}
+<div>
+    <h2>Arrêter de suivre un utilisateur</h2>
+    <p>Voulez-vous vraiment cesser de suivre <b>{{ object.followed_user }}</b> ?</p>
+    <form action="" method="post">
+        {% csrf_token%}
+        <input type="submit" value="Oui, je me désabonne">
+    </form>
+    <a href="{% url 'follow' %}">Revenir aux abonnements</a>
+</div>
+{% endblock %}
