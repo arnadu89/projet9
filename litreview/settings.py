@@ -130,3 +130,6 @@ AUTH_USER_MODEL = 'bookreview.User'
 LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'flux'
 LOGOUT_REDIRECT_URL = 'login'
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR.joinpath('media/')

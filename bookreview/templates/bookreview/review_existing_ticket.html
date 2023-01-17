@@ -1,12 +1,13 @@
 {% extends 'base.html' %}
-
-{% block title %}Créer un ticket{% endblock %}
-
 {% block content %}
-<h1>Création d'un nouveau ticket</h1>
+<h1>Créer une critique</h1>
+Vous êtes en train de poster en réponse à
+
+
+Critique
 <form action="" method="post">
     {% csrf_token %}
     {{ form.as_p }}
     <input type="submit" value="Envoyer">
 </form>
-{% endblock %}
+{% endblock content %}

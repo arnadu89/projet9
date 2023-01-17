@@ -1,11 +1,11 @@
 from django.shortcuts import render
 from django.contrib.auth.views import LoginView as LoginBaseView
-from django.views.generic import CreateView, DeleteView, ListView, TemplateView
+from django.views.generic import CreateView, DeleteView, FormView, TemplateView, UpdateView
 from django.urls import reverse
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 from bookreview import forms
-from bookreview.models import Ticket, UserFollows
+from bookreview.models import Review, Ticket, UserFollows
 
 
 class LoginView(LoginBaseView):
@@ -17,6 +17,18 @@ class LoginView(LoginBaseView):
 class FluxView(LoginRequiredMixin, TemplateView):
     template_name = "bookreview/flux.html"
 
+    def get_context_data(self, **kwargs):
+        kwargs = super().get_context_data(**kwargs)
+        tickets = Ticket.objects.all()
+        posts = sorted(
+            list(tickets),
+            key=lambda post: post.time_created,
+            reverse=True
+        )
+        kwargs["posts"] = posts
+
+        return kwargs
+
 
 class SignupView(CreateView):
     form_class = forms.SignupForm
@@ -26,22 +38,23 @@ class SignupView(CreateView):
         return reverse("flux")
 
 
-class FollowView(LoginRequiredMixin, CreateView):
-    # todo :
-    # - Gérer le champ en passant le username plutôt que l'id
-    # - Ne pas pouvoir s'abonner à soi même
-    # - Gérer l'erreur lorsque l'on essai de s'abonner à un abonnement existant (unique constraint)
+class FollowView(LoginRequiredMixin, FormView):
     model = UserFollows
     form_class = forms.UserFollowsForm
     template_name = "bookreview/follow.html"
 
-    # def get_initial(self):
-    #     self.initial.update({"request": self.request})
-    #     return super().get_initial()
+    def form_valid(self, form):
+        userfollow = UserFollows.objects.create(
+            user=self.request.user,
+            followed_user=form.cleaned_data["followed_user"]
+        )
+        userfollow.save()
+        
+        return super().form_valid(form)
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
-        kwargs["request"] = self.request
+        kwargs["user"] = self.request.user
         return kwargs
 
     def get_context_data(self, **kwargs):
@@ -56,16 +69,20 @@ class FollowView(LoginRequiredMixin, CreateView):
 
 
 class UnFollowView(LoginRequiredMixin, DeleteView):
+    # todo :
+    # Ne pas pouvoir supprimer les abonnements qui ne sont pas à nous
     model = UserFollows
     template_name = "bookreview/unfollow.html"
 
     def get_success_url(self):
         return reverse("follow")
 
+    def get_queryset(self):
+        return super().get_queryset().filter(user=self.request.user)
+
 
 class TicketCreateView(LoginRequiredMixin, CreateView):
     model = Ticket
-    template_name = "bookreview/ticket_create.html"
     form_class = forms.TicketCreateForm
 
     def get_form_kwargs(self):
@@ -75,3 +92,22 @@ class TicketCreateView(LoginRequiredMixin, CreateView):
 
     def get_success_url(self):
         return reverse("flux")
+
+
+class TicketUpdateView(LoginRequiredMixin, UpdateView):
+    model = Ticket
+    form_class = forms.TicketUpdateForm
+
+    def get_success_url(self):
+        return reverse("flux")
+
+
+class ReviewExistingTicketCreate(LoginRequiredMixin, CreateView):
+    model = Review
+    template_name = "bookreview/review_existing_ticket.html"
+    form_class = forms.ReviewCreateForm
+
+    def get_context_data(self, **kwargs):
+        kwargs = super().get_context_data(**kwargs)
+        print(kwargs)
+        return kwargs

@@ -1,5 +1,17 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h2>Connecté en tant que <i>{{ request.user }}</i></h2>
+<div class="p-3 container text-center">
+    <div class="row">
+        <div class="col">
+            <a class="btn btn-primary" href="{% url 'ticket_create' %}">Demander une critique</a>
+        </div>
+        <div class="col">
+            <a class="btn btn-primary" href="">Créer une critique</a>
+        </div>
+    </div>
+    {% for post in posts %}
+        {% include 'bookreview/ticket_post_flux.html' %}
+    {% endfor %}
+</div>
 {% endblock %}

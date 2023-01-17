@@ -16,6 +16,8 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from django.contrib.auth.views import LogoutView
+from django.conf import settings
+from django.conf.urls.static import static
 import bookreview.views
 
 urlpatterns = [
@@ -27,4 +29,12 @@ urlpatterns = [
     path('follow', bookreview.views.FollowView.as_view(), name='follow'),
     path('unfollow/<int:pk>', bookreview.views.UnFollowView.as_view(), name='unfollow'),
     path('ticket/create', bookreview.views.TicketCreateView.as_view(), name='ticket_create'),
+    path('ticket/update/<int:pk>', bookreview.views.TicketUpdateView.as_view(), name='ticket_update'),
+    path('ticket/review/<int:pk>', bookreview.views.ReviewExistingTicketCreate.as_view(), name='review_ticket'),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(
+        settings.MEDIA_URL,
+        document_root=settings.MEDIA_ROOT
+    )
