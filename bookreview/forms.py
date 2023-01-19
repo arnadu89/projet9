@@ -70,6 +70,19 @@ class TicketUpdateForm(forms.ModelForm):
 
 
 class ReviewCreateForm(forms.ModelForm):
+    rating = forms.IntegerField(
+        widget=forms.RadioSelect(
+            choices=((i, i) for i in range(1, 6))
+        )
+    )
+
+    def __init__(self, **kwargs):
+        self.ticket_id = kwargs.pop("ticket_id")
+        self.user = kwargs.pop("user")
+        super().__init__(**kwargs)
+        self.instance.ticket = self.ticket_id
+        self.instance.user = self.user
+
     class Meta:
         model = Review
         fields = ['headline', 'body', 'rating']

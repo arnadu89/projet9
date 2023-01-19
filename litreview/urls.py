@@ -31,6 +31,7 @@ urlpatterns = [
     path('ticket/create', bookreview.views.TicketCreateView.as_view(), name='ticket_create'),
     path('ticket/update/<int:pk>', bookreview.views.TicketUpdateView.as_view(), name='ticket_update'),
     path('ticket/review/<int:pk>', bookreview.views.ReviewExistingTicketCreate.as_view(), name='review_ticket'),
+    path('posts', bookreview.views.PostsView.as_view(), name='posts'),
 ]
 
 if settings.DEBUG:

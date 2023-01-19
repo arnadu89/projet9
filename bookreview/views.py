@@ -1,8 +1,11 @@
+from itertools import chain
+
 from django.shortcuts import render
 from django.contrib.auth.views import LoginView as LoginBaseView
 from django.views.generic import CreateView, DeleteView, FormView, TemplateView, UpdateView
 from django.urls import reverse
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models import CharField, Value
 
 from bookreview import forms
 from bookreview.models import Review, Ticket, UserFollows
@@ -20,8 +23,30 @@ class FluxView(LoginRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs):
         kwargs = super().get_context_data(**kwargs)
         tickets = Ticket.objects.all()
+        tickets = tickets.annotate(content_type=Value("TICKET", CharField()))
+        reviews = Review.objects.all()
+        reviews = reviews.annotate(content_type=Value("REVIEW", CharField()))
         posts = sorted(
-            list(tickets),
+            chain(reviews, tickets),
+            key=lambda post: post.time_created,
+            reverse=True
+        )
+        kwargs["posts"] = posts
+
+        return kwargs
+
+
+class PostsView(LoginRequiredMixin, TemplateView):
+    template_name = "bookreview/posts.html"
+
+    def get_context_data(self, **kwargs):
+        kwargs = super().get_context_data(**kwargs)
+        tickets = Ticket.objects.filter(user=self.request.user)
+        tickets = tickets.annotate(content_type=Value("TICKET", CharField()))
+        reviews = Review.objects.filter(user=self.request.user)
+        reviews = reviews.annotate(content_type=Value("REVIEW", CharField()))
+        posts = sorted(
+            chain(reviews, tickets),
             key=lambda post: post.time_created,
             reverse=True
         )
@@ -107,7 +132,18 @@ class ReviewExistingTicketCreate(LoginRequiredMixin, CreateView):
     template_name = "bookreview/review_existing_ticket.html"
     form_class = forms.ReviewCreateForm
 
-    def get_context_data(self, **kwargs):
-        kwargs = super().get_context_data(**kwargs)
-        print(kwargs)
+    def get_success_url(self):
+        return reverse("flux")
+
+    def get_form_kwargs(self, **kwargs):
+        kwargs = super().get_form_kwargs(**kwargs)
+        ticket_pk = self.request.resolver_match.kwargs["pk"]
+        kwargs["ticket_id"] = Ticket.objects.get(pk=ticket_pk)
+        kwargs["user"] = self.request.user
         return kwargs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        ticket_pk = self.request.resolver_match.kwargs["pk"]
+        context["post"] = Ticket.objects.get(pk=ticket_pk)
+        return context

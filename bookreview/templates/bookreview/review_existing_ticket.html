@@ -1,10 +1,16 @@
 {% extends 'base.html' %}
 {% block content %}
 <h1>Créer une critique</h1>
-Vous êtes en train de poster en réponse à
+<div>
+    Vous êtes en train de poster en réponse à
+    <div>
+        {% include 'bookreview/ticket_post_create_review.html' %}
+    </div>
+</div>
 
 
-Critique
+
+<h2>Critique</h2>
 <form action="" method="post">
     {% csrf_token %}
     {{ form.as_p }}

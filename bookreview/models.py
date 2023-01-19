@@ -32,7 +32,7 @@ class Ticket(models.Model):
     time_created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.title}"
+        return f"Ticket for {self.title} ask by {self.user}"
 
 
 class Review(models.Model):
@@ -45,3 +45,6 @@ class Review(models.Model):
     headline = models.CharField(max_length=128)
     body = models.TextField(max_length=8192, blank=True)
     time_created = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Review for {self.ticket.title} - rated {self.rating} / 5"
