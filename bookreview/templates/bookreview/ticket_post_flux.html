@@ -1,20 +1,24 @@
 <div class="row flux-post">
-    <p>
-        <span class="pull-left">
-            {% if request.user == post.user %}
+    <div class="d-flex justify-content-between">
+        <span>
+            {% if request.user == ticket.user %}
             Vous avez
             {% else %}
-            {{ post.user }} a
+            {{ ticket.user }} a
             {% endif %}
             demandé une critique
         </span>
-        -
-        <span class="float-right">{{ post.time_created|date:'G:i - j F Y' }}</span>
-    </p>
-    <h2>{{ post.title }}</h2>
-    
+        <span class="float-right">{{ ticket.time_created|date:'G:i - j F Y' }}</span>
+    </div>
+    <div>
+        <h2>{{ ticket.title }}</h2>
+        <p>{{ ticket.description }}</p>
+    </div>
+
     {% if request.user != post.user %}
-    <a class="btn btn-primary" href="{% url 'review_ticket' post.id %}">Créer une critique</a>
+        <div class="p-3 d-flex justify-content-end">
+            <a class="btn btn-primary float-right" href="{% url 'review_ticket' ticket.id %}">Créer une critique</a>
+        </div>
     {% endif %}
 
 </div>

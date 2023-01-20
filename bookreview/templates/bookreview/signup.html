@@ -1,12 +1,18 @@
 {% extends 'base.html' %}
 {% block content %}
-<h2>Inscription</h2>
-{% if form.errors %}
-    {{ form.errors }}
-{% endif %}
-<form action="" method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <input type="submit" value="S'inscrire">
-</form>
+<div class="row d-flex flex-column align-items-center">
+    <h2 class="text-center p-3">Inscrivez-vous</h2>
+    {% if form.errors %}
+        {{ form.errors }}
+    {% endif %}
+    <form class="text-center" action="" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+
+        <div class="d-flex justify-content-evenly">
+            <a href="{% url 'flux' %}" class="btn btn-primary float-end" >Retourner</a>
+            <input class="btn btn-primary float-end" type="submit" value="S'inscrire">
+        </div>
+    </form>
+</div>
 {% endblock content %}

@@ -17,7 +17,7 @@
         <ul class="list-group">
             {% for following in followings %}
                 <li class="list-group-item">
-                    {{ following.followed_user }} <a href="{% url 'unfollow' following.pk %}"><button type="button" class="btn btn-danger btn-sm">Se désabonner</button></a>
+                    {{ following.followed_user }} <a class="float-end" href="{% url 'unfollow' following.pk %}"><button type="button" class="btn btn-danger btn-sm">Se désabonner</button></a>
                 </li>
             {% empty %}
                 <p>Vous n'avez aucun abonnement.</p>

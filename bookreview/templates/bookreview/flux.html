@@ -1,8 +1,8 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="p-3 container text-center">
-    <div class="row">
+<div class="p-3 container">
+    <div class="row text-center">
         <div class="col">
             <a class="btn btn-primary" href="{% url 'ticket_create' %}">Demander une critique</a>
         </div>
@@ -12,9 +12,9 @@
     </div>
     {% for post in posts %}
         {% if post.content_type == 'TICKET' %}
-            {% include 'bookreview/ticket_post_flux.html' %}
+            {% include 'bookreview/ticket_post_flux.html' with ticket=post %}
         {% elif post.content_type == 'REVIEW' %}
-            {% include 'bookreview/review_post_flux.html' %}
+            {% include 'bookreview/review_post_flux.html' with review=post %}
         {% endif %}
     {% endfor %}
 </div>

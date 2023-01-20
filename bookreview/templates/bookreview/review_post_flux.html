@@ -1,20 +1,22 @@
 <div class="row flux-post">
-    <p>
+    <div class="d-flex justify-content-between">
         <span class="pull-left">
-            {% if request.user == post.user %}
+            {% if request.user == review.user %}
             Vous avez
             {% else %}
-            {{ post.user }} a
+            {{ review.user }} a
             {% endif %}
             posté une critique
         </span>
-        -
-        <span class="float-right">{{ post.time_created|date:'G:i - j F Y' }}</span>
-    </p>
-    <h2>{{ post.headline }} - {{ post.rating }} / 5</h2>
+        <span class="float-right">{{ review.time_created|date:'G:i - j F Y' }}</span>
+    </div>
 
     <div>
-        {% include 'bookreview/ticket_post_flux.html' with post=post.ticket %}
+        <h2>{{ review.headline }} - {{ review.rating }} / 5</h2>
+    </div>
+
+    <div>
+        {% include 'bookreview/ticket_post_flux.html' with ticket=review.ticket %}
     </div>
 
 </div>

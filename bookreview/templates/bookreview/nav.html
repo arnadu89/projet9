@@ -1,0 +1,19 @@
+<nav class="navbar navbar-expand-sm bg-dark" data-bs-theme="dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="{% url 'flux' %}">LITReview</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"
+                aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+            <div class="navbar-nav ms-auto">
+                {% if request.user.is_authenticated %}
+                  <a class="nav-link" href="{% url 'flux' %}">Flux</a>
+                  <a class="nav-link" href="{% url 'posts' %}">Posts</a>
+                  <a class="nav-link" href="{% url 'follow' %}">Abonnement</a>
+                  <a class="nav-link" href="{% url 'logout' %}">Se déconnecter</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</nav>
