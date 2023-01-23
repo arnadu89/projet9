@@ -70,6 +70,10 @@ class TicketUpdateForm(forms.ModelForm):
 
 
 class ReviewCreateForm(forms.ModelForm):
+    class Meta:
+        model = Review
+        fields = ['headline', 'body', 'rating']
+
     rating = forms.IntegerField(
         widget=forms.RadioSelect(
             choices=((i, i) for i in range(1, 6))
@@ -83,6 +87,47 @@ class ReviewCreateForm(forms.ModelForm):
         self.instance.ticket = self.ticket_id
         self.instance.user = self.user
 
+
+class ReviewUpdateForm(ReviewCreateForm):
+    def __init__(self, **kwargs):
+        forms.ModelForm.__init__(self, **kwargs)
+
+
+class TicketAndReviewCreateForm(forms.ModelForm):
     class Meta:
-        model = Review
-        fields = ['headline', 'body', 'rating']
+        model = Ticket
+        fields = ['title', 'description', 'image']
+
+    review_headline = forms.CharField(max_length=128)
+    review_rating = forms.IntegerField(
+        widget=forms.RadioSelect(
+            choices=((i, i) for i in range(1, 6))
+        )
+    )
+    review_body = forms.CharField(max_length=8192)
+
+    def __init__(self, **kwargs):
+        self.user = kwargs.pop('user')
+        super().__init__(**kwargs)
+
+    def save(self, commit=True):
+        # saving ticket instance
+        self.instance.user = self.user
+        ticket_instance = super().save(commit)
+
+        # Creating review
+        review_data = {
+            'headline': self.cleaned_data["review_headline"],
+            'body': self.cleaned_data["review_body"],
+            'rating': self.cleaned_data["review_rating"],
+        }
+
+        review_validation_form = ReviewCreateForm(
+            data=review_data,
+            ticket_id=ticket_instance,
+            user=self.user,
+        )
+        review_validation_form.save(commit)
+
+        return ticket_instance
+

@@ -1,14 +1,12 @@
 {% extends 'base.html' %}
 {% block content %}
-<h1>Créer une critique</h1>
-<div>
+<h1 class="text-center">Modifier votre critique</h1>
+<div class="row">
     Vous êtes en train de poster en réponse à
     <div>
-        {% include 'bookreview/ticket_post_create_review.html' with ticket=post %}
+        {% include 'bookreview/ticket_post_create_review.html' with ticket=form.instance.ticket %}
     </div>
 </div>
-
-
 
 <h2>Critique</h2>
 <form action="" method="post">

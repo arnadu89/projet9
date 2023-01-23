@@ -2,7 +2,7 @@ from itertools import chain
 
 from django.shortcuts import render
 from django.contrib.auth.views import LoginView as LoginBaseView
-from django.views.generic import CreateView, DeleteView, FormView, TemplateView, UpdateView
+from django.views.generic import CreateView, DeleteView, FormView, TemplateView, UpdateView, View
 from django.urls import reverse
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import CharField, Value
@@ -124,7 +124,7 @@ class TicketUpdateView(LoginRequiredMixin, UpdateView):
     form_class = forms.TicketUpdateForm
 
     def get_success_url(self):
-        return reverse("flux")
+        return reverse("posts")
 
 
 class ReviewExistingTicketCreate(LoginRequiredMixin, CreateView):
@@ -135,8 +135,8 @@ class ReviewExistingTicketCreate(LoginRequiredMixin, CreateView):
     def get_success_url(self):
         return reverse("flux")
 
-    def get_form_kwargs(self, **kwargs):
-        kwargs = super().get_form_kwargs(**kwargs)
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
         ticket_pk = self.request.resolver_match.kwargs["pk"]
         kwargs["ticket_id"] = Ticket.objects.get(pk=ticket_pk)
         kwargs["user"] = self.request.user
@@ -147,3 +147,26 @@ class ReviewExistingTicketCreate(LoginRequiredMixin, CreateView):
         ticket_pk = self.request.resolver_match.kwargs["pk"]
         context["post"] = Ticket.objects.get(pk=ticket_pk)
         return context
+
+
+class ReviewUpdate(LoginRequiredMixin, UpdateView):
+    model = Review
+    template_name = "bookreview/review_update.html"
+    form_class = forms.ReviewUpdateForm
+
+    def get_success_url(self):
+        return reverse("posts")
+
+
+class TicketAndReviewCreate(LoginRequiredMixin, CreateView):
+    model = Ticket
+    form_class = forms.TicketAndReviewCreateForm
+    template_name = "bookreview/ticket_and_review_create.html"
+
+    def get_success_url(self):
+        return reverse("flux")
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["user"] = self.request.user
+        return kwargs
