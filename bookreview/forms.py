@@ -127,7 +127,11 @@ class TicketAndReviewCreateForm(forms.ModelForm):
             ticket_id=ticket_instance,
             user=self.user,
         )
-        review_validation_form.save(commit)
+        if review_validation_form.is_valid():
+            review_validation_form.save(commit)
+        else:
+            # Gérer le fail da la validation du formulaire de review
+            pass
 
         return ticket_instance
 

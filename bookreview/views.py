@@ -6,9 +6,10 @@ from django.views.generic import CreateView, DeleteView, FormView, TemplateView,
 from django.urls import reverse
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import CharField, Value
+from django.db.models import Q
 
 from bookreview import forms
-from bookreview.models import Review, Ticket, UserFollows
+from bookreview.models import Review, Ticket, User, UserFollows
 
 
 class LoginView(LoginBaseView):
@@ -22,12 +23,31 @@ class FluxView(LoginRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         kwargs = super().get_context_data(**kwargs)
-        tickets = Ticket.objects.all()
+        # Get users followed
+        followings = [
+            userfollow.followed_user
+            for userfollow in self.request.user.following.all()
+        ]
+        followings.append(self.request.user)
+
+        # Get tickets
+        tickets = Ticket.objects.filter(
+            # user__in=followings
+            Q(user__following__user=self.request.user) | Q(user=self.request.user)
+        )
+
         tickets = tickets.annotate(content_type=Value("TICKET", CharField()))
-        reviews = Review.objects.all()
+
+        # Get reviews
+        reviews = Review.objects.filter(
+            user__in=followings
+        )
         reviews = reviews.annotate(content_type=Value("REVIEW", CharField()))
+
+        # Sorting posts
         posts = sorted(
             chain(reviews, tickets),
+            # tickets,
             key=lambda post: post.time_created,
             reverse=True
         )
@@ -94,8 +114,6 @@ class FollowView(LoginRequiredMixin, FormView):
 
 
 class UnFollowView(LoginRequiredMixin, DeleteView):
-    # todo :
-    # Ne pas pouvoir supprimer les abonnements qui ne sont pas à nous
     model = UserFollows
     template_name = "bookreview/unfollow.html"
 
@@ -127,7 +145,15 @@ class TicketUpdateView(LoginRequiredMixin, UpdateView):
         return reverse("posts")
 
 
-class ReviewExistingTicketCreate(LoginRequiredMixin, CreateView):
+class TicketDeleteView(LoginRequiredMixin, DeleteView):
+    model = Ticket
+    template_name = "bookreview/ticket_delete.html"
+
+    def get_success_url(self):
+        return reverse("posts")
+
+
+class ReviewExistingTicketCreateView(LoginRequiredMixin, CreateView):
     model = Review
     template_name = "bookreview/review_existing_ticket.html"
     form_class = forms.ReviewCreateForm
@@ -149,7 +175,7 @@ class ReviewExistingTicketCreate(LoginRequiredMixin, CreateView):
         return context
 
 
-class ReviewUpdate(LoginRequiredMixin, UpdateView):
+class ReviewUpdateView(LoginRequiredMixin, UpdateView):
     model = Review
     template_name = "bookreview/review_update.html"
     form_class = forms.ReviewUpdateForm
@@ -158,7 +184,15 @@ class ReviewUpdate(LoginRequiredMixin, UpdateView):
         return reverse("posts")
 
 
-class TicketAndReviewCreate(LoginRequiredMixin, CreateView):
+class ReviewDeleteView(LoginRequiredMixin, DeleteView):
+    model = Review
+    template_name = "bookreview/review_delete.html"
+
+    def get_success_url(self):
+        return reverse("posts")
+
+
+class TicketAndReviewCreateView(LoginRequiredMixin, CreateView):
     model = Ticket
     form_class = forms.TicketAndReviewCreateForm
     template_name = "bookreview/ticket_and_review_create.html"

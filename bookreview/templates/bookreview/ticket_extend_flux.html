@@ -1,0 +1,27 @@
+{% extends 'bookreview/ticket_base.html' %}
+
+{% block ticket_header_title %}
+    {% if request.user == ticket.user %}
+        Vous avez
+    {% else %}
+        {{ ticket.user }} a
+    {% endif %}
+        demandé une critique
+{% endblock ticket_header_title %}
+
+{% block ticket_description %}
+    <p>{{ ticket.description }}</p>
+{% endblock ticket_description %}
+
+{% block ticket_footer %}
+    {% if ticket.review %}
+        <div>
+            {% include 'bookreview/review_base.html' with review=ticket.review %}
+        </div>
+
+    {% else %}
+        <div class="p-3 d-flex justify-content-end">
+            <a class="btn btn-primary float-right" href="{% url 'review_ticket' ticket.id %}">Créer une critique</a>
+        </div>
+    {% endif %}
+{% endblock ticket_footer %}

@@ -1,0 +1,27 @@
+<div class="row flux-post">
+    <div class="d-flex justify-content-between">
+        <span>
+            {% block ticket_header_title %}
+                Ticket -
+                {% if request.user == ticket.user %}
+                    Vous
+                {% else %}
+                    {{ ticket.user }}
+                {% endif %}
+            {% endblock ticket_header_title %}
+        </span>
+        <span class="float-right">{{ ticket.time_created|date:'G:i - j F Y' }}</span>
+    </div>
+    <div>
+        <h2>{{ ticket.title }}</h2>
+        {% block ticket_description %}{% endblock ticket_description %}
+    </div>
+
+    {% if ticket.image %}
+    <div>
+        <img class="ticket-image" src="{{ ticket.image.url }}" alt="illustration pour le ticket {{ ticket.id }}">
+    </div>
+    {% endif %}
+
+    {% block ticket_footer %}{% endblock ticket_footer %}
+</div>

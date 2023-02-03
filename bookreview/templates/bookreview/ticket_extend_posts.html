@@ -1,0 +1,12 @@
+{% extends 'bookreview/ticket_base.html' %}
+
+{% block ticket_header_title %}
+        Vous avez publié un ticket
+{% endblock ticket_header_title %}
+
+{% block ticket_footer %}
+    <div class="float-end">
+        <a class="float-end m-1 btn btn-danger" href="{% url 'ticket_delete' ticket.id %}">Supprimer</a>
+        <a class="float-end m-1 btn btn-primary" href="{% url 'ticket_update' ticket.id %}">Modifier</a>
+    </div>
+{% endblock ticket_footer %}

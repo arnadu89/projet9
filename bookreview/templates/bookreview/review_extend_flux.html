@@ -1,0 +1,11 @@
+{% extends 'bookreview/review_base.html' %}
+
+{% block review_body %}
+    <p>{{ review.body }}</p>
+{% endblock review_body %}
+
+{% block review_ticket %}
+    <div>
+        {% include 'bookreview/ticket_base.html' with ticket=review.ticket %}
+    </div>
+{% endblock review_ticket %}

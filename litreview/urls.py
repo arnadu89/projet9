@@ -30,9 +30,11 @@ urlpatterns = [
     path('unfollow/<int:pk>', bookreview.views.UnFollowView.as_view(), name='unfollow'),
     path('ticket/create', bookreview.views.TicketCreateView.as_view(), name='ticket_create'),
     path('ticket/update/<int:pk>', bookreview.views.TicketUpdateView.as_view(), name='ticket_update'),
-    path('ticket/review/<int:pk>', bookreview.views.ReviewExistingTicketCreate.as_view(), name='review_ticket'),
-    path('ticket/review/create', bookreview.views.TicketAndReviewCreate.as_view(), name='ticket_and_review_create'),
-    path('review/update/<int:pk>', bookreview.views.ReviewUpdate.as_view(), name='review_update'),
+    path('ticket/delete/<int:pk>', bookreview.views.TicketDeleteView.as_view(), name='ticket_delete'),
+    path('ticket/review/<int:pk>', bookreview.views.ReviewExistingTicketCreateView.as_view(), name='review_ticket'),
+    path('ticket/review/create', bookreview.views.TicketAndReviewCreateView.as_view(), name='ticket_and_review_create'),
+    path('review/update/<int:pk>', bookreview.views.ReviewUpdateView.as_view(), name='review_update'),
+    path('review/delete/<int:pk>', bookreview.views.ReviewDeleteView.as_view(), name='review_delete'),
     path('posts', bookreview.views.PostsView.as_view(), name='posts'),
 ]
 

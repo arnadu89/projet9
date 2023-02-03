@@ -1,0 +1,26 @@
+<div class="row flux-post">
+    <div class="d-flex justify-content-between">
+        {% block review_header %}
+            <span class="pull-left">
+                {% if request.user == review.user %}
+                Vous avez
+                {% else %}
+                {{ review.user }} a
+                {% endif %}
+                posté une critique
+            </span>
+        {% endblock review_header %}
+        <span class="float-right">{{ review.time_created|date:'G:i - j F Y' }}</span>
+    </div>
+
+    <div class="row">
+        <h2>{{ review.headline }} - {{ review.rating }} / 5</h2>
+    </div>
+
+    {% block review_body %}{% endblock review_body %}
+
+    {% block review_ticket %}{% endblock review_ticket %}
+
+    {% block review_footer %}{% endblock review_footer %}
+
+</div>

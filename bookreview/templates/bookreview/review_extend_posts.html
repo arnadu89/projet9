@@ -1,0 +1,24 @@
+{% extends 'bookreview/review_base.html' %}
+
+{% block review_header %}
+    <span class="pull-left">
+        Vous avez publié une critique
+    </span>
+{% endblock review_header %}
+
+{% block review_body %}
+    <p>{{ review.body }}</p>
+{% endblock review_body %}
+
+{% block review_ticket %}
+    <div>
+        {% include 'bookreview/ticket_base.html' with ticket=review.ticket %}
+    </div>
+{% endblock review_ticket %}
+
+{% block review_footer %}
+    <div>
+        <a class="float-end m-1 btn btn-danger" href="{% url 'review_delete' post.id %}">Supprimer</a>
+        <a class="float-end m-1 btn btn-primary" href="{% url 'review_update' post.id %}">Modifier</a>
+    </div>
+{% endblock review_footer %}

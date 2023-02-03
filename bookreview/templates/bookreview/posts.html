@@ -7,19 +7,11 @@
     </div>
 
     {% for post in posts %}
-    <div class="row flux-post p-1">
+    <div class="row">
         {% if post.content_type == 'TICKET' %}
-            {% include 'bookreview/ticket_post_flux.html' with ticket=post %}
-            <div class="float-end">
-                <a class="btn btn-primary" href="{% url 'ticket_update' post.id %}">Modifier</a>
-                <a class="btn btn-danger disabled" href="">Supprimer</a>
-            </div>
+            {% include 'bookreview/ticket_extend_posts.html' with ticket=post %}
         {% elif post.content_type == 'REVIEW' %}
-            {% include 'bookreview/review_post_flux.html' with review=post %}
-            <div class="float-end">
-                <a class="btn btn-primary" href="{% url 'review_update' post.id %}">Modifier</a>
-                <a class="btn btn-danger disabled" href="">Supprimer</a>
-            </div>
+            {% include 'bookreview/review_extend_posts.html' with review=post %}
         {% endif %}
     </div>
     {% endfor %}
