@@ -2,10 +2,21 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.conf import settings
 from django.core.validators import MinValueValidator, MaxValueValidator
+from django.db.models import Q
 
 
 class User(AbstractUser):
-    pass
+    def get_tickets_from_subscriptions(self):
+        tickets = Ticket.objects.filter(
+            Q(user__followed_by__user=self) | Q(user=self)
+        )
+        return tickets
+
+    def get_reviews_from_subscriptions(self):
+        reviews = Review.objects.filter(
+            Q(user__followed_by__user=self) | Q(user=self)
+        )
+        return reviews
 
 
 class UserFollows(models.Model):
