@@ -8,13 +8,22 @@ from django.db.models import Q
 class User(AbstractUser):
     def get_tickets_from_subscriptions(self):
         tickets = Ticket.objects.filter(
-            Q(user__followed_by__user=self) | Q(user=self)
+            # Q(user__followed_by__user=self) | Q(user=self)
+            Q(user__in=[f.followed_user for f in self.following.all()]) | Q(user=self)
         )
+        # Ticket.objects.filter(Q(user__in=[f.followed_user for f in self.following.all()]) | Q(user=self))
+        # import ipdb
+        # ipdb.set_trace()
         return tickets
 
     def get_reviews_from_subscriptions(self):
+        # get reviews from :
+        # users followed
+        # your reviews
+        # reviews that concern ticket you have posted
         reviews = Review.objects.filter(
-            Q(user__followed_by__user=self) | Q(user=self)
+            # Q(user__followed_by__user=self) | Q(user=self) | Q(ticket__user=self)
+            Q(user__in=[f.followed_user for f in self.following.all()]) | Q(user=self) | Q(ticket__user=self)
         )
         return reviews
 
@@ -45,6 +54,13 @@ class Ticket(models.Model):
     @property
     def review(self):
         return self.review_set.last()
+
+    @property
+    def reviews(self):
+        return self.review_set.all()
+
+    def has_user_already_reviewed(self, user):
+        return [review for review in self.review_set.all() if user == review.user]
 
     def __str__(self):
         return f"Ticket for {self.title} ask by {self.user}"

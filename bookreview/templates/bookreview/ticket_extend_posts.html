@@ -9,6 +9,11 @@
 {% endblock ticket_description %}
 
 {% block ticket_footer %}
+    {% for review in ticket.reviews %}
+        <div>
+            {% include 'bookreview/review_base.html' with review=review %}
+        </div>
+    {% endfor %}
     <div class="float-end">
         <a class="float-end m-1 btn btn-danger" href="{% url 'ticket_delete' ticket.id %}">Supprimer</a>
         <a class="float-end m-1 btn btn-primary" href="{% url 'ticket_update' ticket.id %}">Modifier</a>

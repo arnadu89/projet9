@@ -38,12 +38,14 @@ class UserFollowsForm(forms.Form):
 
         if self.user == self.cleaned_data["followed_user"]:
             raise ValidationError(
-                f"Vous ne pouvez pas vous suivre vous même !"
+                f"Vous ne pouvez pas vous suivre vous même !",
+                code="self_subscription"
             )
 
         if UserFollows.objects.filter(user=self.user, followed_user__username=follower_username):
             raise ValidationError(
-                f"Vous suivez déjà l'utilisateur {follower_username}."
+                f"Vous suivez déjà l'utilisateur {follower_username}.",
+                code="already_subscribed"
             )
         return self.cleaned_data["followed_user"]
 

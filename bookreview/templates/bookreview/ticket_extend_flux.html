@@ -14,12 +14,12 @@
 {% endblock ticket_description %}
 
 {% block ticket_footer %}
-    {% if ticket.review %}
+    {% for review in ticket.reviews %}
         <div>
-            {% include 'bookreview/review_base.html' with review=ticket.review %}
+            {% include 'bookreview/review_base.html' with review=review %}
         </div>
-
-    {% else %}
+    {% endfor %}
+    {% if not ticket.user_already_reviewed %}
         <div class="p-3 d-flex justify-content-end">
             <a class="btn btn-primary float-right" href="{% url 'review_ticket' ticket.id %}">Créer une critique</a>
         </div>

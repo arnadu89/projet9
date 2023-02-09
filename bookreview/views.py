@@ -5,7 +5,7 @@ from django.contrib.auth.views import LoginView as LoginBaseView
 from django.views.generic import CreateView, DeleteView, FormView, TemplateView, UpdateView, View
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models import CharField, Value
+from django.db.models import BooleanField, CharField, Value
 from django.db.models import Q
 
 from bookreview import forms
@@ -27,15 +27,18 @@ class FluxView(LoginRequiredMixin, TemplateView):
         # Get tickets
         tickets = self.request.user.get_tickets_from_subscriptions()
         tickets = tickets.annotate(content_type=Value("TICKET", CharField()))
+        for ticket in tickets:
+            if ticket.has_user_already_reviewed(self.request.user):
+                ticket.user_already_reviewed = True
 
         # Get reviews
         reviews = self.request.user.get_reviews_from_subscriptions()
         reviews = reviews.annotate(content_type=Value("REVIEW", CharField()))
 
         # Sorting posts
+        posts = set(chain(reviews, tickets))
         posts = sorted(
-            chain(reviews, tickets),
-            # tickets,
+            posts,
             key=lambda post: post.time_created,
             reverse=True
         )
