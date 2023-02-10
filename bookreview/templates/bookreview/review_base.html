@@ -14,7 +14,20 @@
     </div>
 
     <div class="row">
-        <h2>{{ review.headline }} - {{ review.rating }} / 5</h2>
+        <h2>{{ review.headline }} -
+            {% for i in '12345'|make_list %}
+
+                {% if review.rating > forloop.counter0 %}
+                    <span class="text-warning">
+                        ★
+                    </span>
+                {% else %}
+                    <span>
+                        ☆
+                    </span>
+                {% endif %}
+            {% endfor %}
+        </h2>
     </div>
 
     {% block review_body %}{% endblock review_body %}

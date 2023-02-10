@@ -20,7 +20,7 @@ class SignupForm(UserCreationForm):
 
 
 class UserFollowsForm(forms.Form):
-    followed_user = CharField()
+    followed_user = CharField(label="Nom d'utilisateur")
 
     def __init__(self, **kwargs):
         self.user = kwargs.pop("user")
@@ -78,7 +78,7 @@ class ReviewCreateForm(forms.ModelForm):
 
     rating = forms.IntegerField(
         widget=forms.RadioSelect(
-            choices=((i, i) for i in range(1, 6))
+            choices=((i, i) for i in range(0, 6))
         )
     )
 
@@ -100,13 +100,21 @@ class TicketAndReviewCreateForm(forms.ModelForm):
         model = Ticket
         fields = ['title', 'description', 'image']
 
-    review_headline = forms.CharField(max_length=128)
+    review_headline = forms.CharField(
+        max_length=128,
+        label="Titre"
+    )
     review_rating = forms.IntegerField(
         widget=forms.RadioSelect(
-            choices=((i, i) for i in range(1, 6))
-        )
+            choices=((i, i) for i in range(0, 6))
+        ),
+        label="Note"
     )
-    review_body = forms.CharField(max_length=8192)
+    review_body = forms.CharField(
+        max_length=8192,
+        widget=forms.Textarea,
+        label="Commentaire"
+    )
 
     def __init__(self, **kwargs):
         self.user = kwargs.pop('user')

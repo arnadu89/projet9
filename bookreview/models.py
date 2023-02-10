@@ -8,13 +8,13 @@ from django.db.models import Q
 class User(AbstractUser):
     def get_tickets_from_subscriptions(self):
         tickets = Ticket.objects.filter(
-            # Q(user__followed_by__user=self) | Q(user=self)
-            Q(user__in=[f.followed_user for f in self.following.all()]) | Q(user=self)
+            Q(user__followed_by__user=self) | Q(user=self)
+            # Q(user__in=[f.followed_user for f in self.following.all()]) | Q(user=self)
         )
         # Ticket.objects.filter(Q(user__in=[f.followed_user for f in self.following.all()]) | Q(user=self))
         # import ipdb
         # ipdb.set_trace()
-        return tickets
+        return tickets.distinct()
 
     def get_reviews_from_subscriptions(self):
         # get reviews from :
@@ -22,10 +22,10 @@ class User(AbstractUser):
         # your reviews
         # reviews that concern ticket you have posted
         reviews = Review.objects.filter(
-            # Q(user__followed_by__user=self) | Q(user=self) | Q(ticket__user=self)
-            Q(user__in=[f.followed_user for f in self.following.all()]) | Q(user=self) | Q(ticket__user=self)
+            Q(user__followed_by__user=self) | Q(user=self) | Q(ticket__user=self)
+            # Q(user__in=[f.followed_user for f in self.following.all()]) | Q(user=self) | Q(ticket__user=self)
         )
-        return reviews
+        return reviews.distinct()
 
 
 class UserFollows(models.Model):

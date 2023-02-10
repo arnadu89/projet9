@@ -7,7 +7,12 @@
     {% endif %}
     <form class="text-center" action="" method="post">
         {% csrf_token %}
-        {{ form.as_p }}
+        {% for field in form %}
+            <div class="form-group p-2">
+                {{ field.errors }}
+                {{ field.label_tag }} {{ field }}
+            </div>
+        {% endfor %}
 
         <div class="d-flex justify-content-evenly">
             <a href="{% url 'flux' %}" class="btn btn-primary float-end" >Retourner</a>
