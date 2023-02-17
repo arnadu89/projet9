@@ -1,15 +1,13 @@
 from itertools import chain
 
-from django.shortcuts import render
 from django.contrib.auth.views import LoginView as LoginBaseView
-from django.views.generic import CreateView, DeleteView, FormView, TemplateView, UpdateView, View
+from django.views.generic import CreateView, DeleteView, FormView, TemplateView, UpdateView
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models import BooleanField, CharField, Value
-from django.db.models import Q
+from django.db.models import CharField, Value
 
 from bookreview import forms
-from bookreview.models import Review, Ticket, User, UserFollows
+from bookreview.models import Review, Ticket, UserFollows
 
 
 class LoginView(LoginBaseView):

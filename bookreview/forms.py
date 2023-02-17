@@ -1,7 +1,6 @@
 from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
-from django.core.exceptions import ObjectDoesNotExist
 from django.core.exceptions import ValidationError
 from django.forms import CharField
 
@@ -10,7 +9,10 @@ from bookreview.models import Review, Ticket, User, UserFollows
 
 class LoginForm(AuthenticationForm):
     username = forms.CharField(label="Nom d'utilisateur")
-    password = forms.CharField(widget=forms.PasswordInput, label="Mot de passe")
+    password = forms.CharField(
+        widget=forms.PasswordInput,
+        label="Mot de passe"
+    )
 
 
 class SignupForm(UserCreationForm):
@@ -28,7 +30,9 @@ class UserFollowsForm(forms.Form):
 
     def clean_followed_user(self):
         follower_username = self.cleaned_data["followed_user"]
-        if not (followed_user := User.objects.filter(username=follower_username)):
+        if not (
+                followed_user := User.objects.filter(username=follower_username)
+        ):
             raise ValidationError(
                 f"L'utilisateur avec le nom {follower_username} n'existe pas.",
                 code="user_does_not_exist"
@@ -38,11 +42,14 @@ class UserFollowsForm(forms.Form):
 
         if self.user == self.cleaned_data["followed_user"]:
             raise ValidationError(
-                f"Vous ne pouvez pas vous suivre vous même !",
+                "Vous ne pouvez pas vous suivre vous même !",
                 code="self_subscription"
             )
 
-        if UserFollows.objects.filter(user=self.user, followed_user__username=follower_username):
+        if UserFollows.objects.filter(
+                user=self.user,
+                followed_user__username=follower_username
+        ):
             raise ValidationError(
                 f"Vous suivez déjà l'utilisateur {follower_username}.",
                 code="already_subscribed"
@@ -144,4 +151,3 @@ class TicketAndReviewCreateForm(forms.ModelForm):
             pass
 
         return ticket_instance
-

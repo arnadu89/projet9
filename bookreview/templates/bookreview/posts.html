@@ -14,6 +14,8 @@
             {% include 'bookreview/review_extend_posts.html' with review=post %}
         {% endif %}
     </div>
+    {% empty %}
+    Vous n'avez pas de publication.
     {% endfor %}
 </div>
 {% endblock %}
